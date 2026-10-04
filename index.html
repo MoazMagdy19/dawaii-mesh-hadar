@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>دوائي مش هدر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script>
+  tailwind = { config: { corePlugins: { preflight: true } } };
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+<style>
+  :root {
+    --bg: #F5FAF8;
+    --surface: #FFFFFF;
+    --surface-alt: #EEF6F2;
+    --border: #DCEAE3;
+    --text: #0F231C;
+    --text-muted: #5A776E;
+    --primary: #0E7A6D;
+    --primary-strong: #0A5B51;
+    --primary-soft: #DFF3EE;
+    --accent: #275C9E;
+    --accent-soft: #E4EDF8;
+    --success: #1C9A56;
+    --success-soft: #E2F6EA;
+    --warning: #C97A11;
+    --warning-soft: #FBEEDA;
+    --danger: #C7402F;
+    --danger-soft: #FBE7E3;
+    --shadow: 0 1px 2px rgba(15,35,28,.04), 0 8px 24px -12px rgba(15,35,28,.10);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0A1613;
+    --surface: #101F1A;
+    --surface-alt: #142621;
+    --border: #1E362E;
+    --text: #E8F4EF;
+    --text-muted: #86A99C;
+    --primary: #2FD1B8;
+    --primary-strong: #59E0CB;
+    --primary-soft: #103A32;
+    --accent: #6FA6EC;
+    --accent-soft: #12253D;
+    --success: #4ED08A;
+    --success-soft: #10301F;
+    --warning: #E4A94B;
+    --warning-soft: #3A2A0E;
+    --danger: #E8776A;
+    --danger-soft: #3B1712;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans Arabic','Tahoma',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    transition:background .25s ease, color .25s ease;
+  }
+  .mono{ font-family:'IBM Plex Mono',monospace; }
+  .surface{ background:var(--surface); border:1px solid var(--border); }
+  .surface-alt{ background:var(--surface-alt); }
+  ::selection{ background:var(--primary-soft); }
+
+  .nav-item{
+    display:flex; align-items:center; gap:.65rem;
+    padding:.62rem .8rem; border-radius:.6rem;
+    color:var(--text-muted); font-size:.92rem; font-weight:500;
+    cursor:pointer; border:1px solid transparent;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .nav-item:hover{ background:var(--surface-alt); color:var(--text); }
+  .nav-item.active{
+    background:var(--primary-soft); color:var(--primary-strong);
+    border-color:var(--primary);
+    font-weight:600;
+  }
+  .nav-icon{
+    width:1.35rem; height:1.35rem; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    border-radius:.65rem; font-weight:600; font-size:.9rem;
+    padding:.62rem 1.1rem; cursor:pointer; border:1px solid transparent;
+    transition:transform .12s ease, filter .15s ease, background .15s;
+    white-space:nowrap;
+  }
+  .btn:active{ transform:translateY(1px) scale(.99); }
+  .btn-primary{ background:var(--primary); color:#fff; }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-outline{ background:transparent; border-color:var(--border); color:var(--text); }
+  .btn-outline:hover{ background:var(--surface-alt); }
+  .btn-soft{ background:var(--primary-soft); color:var(--primary-strong); }
+  .btn-soft:hover{ filter:brightness(1.05); }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:1rem; box-shadow:var(--shadow); }
+
+  .dot{ width:.55rem; height:.55rem; border-radius:999px; flex:none; }
+  .dot-red{ background:var(--danger); }
+  .dot-orange{ background:var(--warning); }
+  .dot-green{ background:var(--success); }
+
+  .badge{ display:inline-flex; align-items:center; gap:.4rem; font-size:.78rem; font-weight:600; padding:.28rem .65rem; border-radius:999px; }
+  .badge-red{ background:var(--danger-soft); color:var(--danger); }
+  .badge-orange{ background:var(--warning-soft); color:var(--warning); }
+  .badge-green{ background:var(--success-soft); color:var(--success); }
+
+  input[type=text], input[type=number], input[type=date], select, textarea{
+    width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:.6rem; padding:.6rem .75rem; font-size:.9rem; font-family:inherit;
+    outline:none; transition:border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus{ border-color:var(--primary); }
+  label.field-label{ font-size:.8rem; font-weight:600; color:var(--text-muted); margin-bottom:.35rem; display:block; }
+
+  .scrollbar-thin::-webkit-scrollbar{ width:6px; height:6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb{ background:var(--border); border-radius:99px; }
+
+  @keyframes pulseSoft{ 0%,100%{ opacity:1 } 50%{ opacity:.55 } }
+  .pulse{ animation:pulseSoft 1.4s ease-in-out infinite; }
+
+  @keyframes riseIn{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .rise-in{ animation:riseIn .3s ease both; }
+
+  table{ border-collapse:collapse; width:100%; }
+  th{ text-align:right; font-size:.78rem; color:var(--text-muted); font-weight:600; padding:.7rem .9rem; border-bottom:1px solid var(--border); white-space:nowrap; }
+  td{ padding:.75rem .9rem; border-bottom:1px solid var(--border); font-size:.87rem; vertical-align:middle; white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+
+  .switch{ width:2.5rem; height:1.4rem; border-radius:999px; background:var(--border); position:relative; cursor:pointer; flex:none; transition:background .2s; }
+  .switch.on{ background:var(--primary); }
+  .switch .knob{ position:absolute; top:.15rem; right:.15rem; width:1.1rem; height:1.1rem; border-radius:999px; background:#fff; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.25); }
+  .switch.on .knob{ transform:translateX(-1.1rem); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const { useState, useEffect, useMemo, useRef } = React;
+const h = React.createElement;
+
+/* ---------------- Icons (inline SVG, stroke uses currentColor) ---------------- */
+const Icon = ({ path, size=20 }) => h('svg', { width:size, height:size, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, path);
+const icons = {
+  grid: h(React.Fragment, null, h('rect',{x:3,y:3,width:7,height:7,rx:1.5}), h('rect',{x:14,y:3,width:7,height:7,rx:1.5}), h('rect',{x:3,y:14,width:7,height:7,rx:1.5}), h('rect',{x:14,y:14,width:7,height:7,rx:1.5})),
+  pill: h(React.Fragment, null, h('rect',{x:3,y:9.5,width:18,height:5,rx:2.5, transform:'rotate(-45 12 12)'}), h('line',{x1:9.5,y1:14.5,x2:12,y2:12})),
+  plus: h(React.Fragment, null, h('line',{x1:12,y1:5,x2:12,y2:19}), h('line',{x1:5,y1:12,x2:19,y2:12})),
+  clock: h(React.Fragment, null, h('circle',{cx:12,cy:12,r:9}), h('path',{d:'M12 7v5l3 3'})),
+  hand: h(React.Fragment, null, h('path',{d:'M12 21s-7-4.35-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6C19 16.65 12 21 12 21z'})),
+  bell: h(React.Fragment, null, h('path',{d:'M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6'}), h('path',{d:'M9.5 19a2.5 2.5 0 0 0 5 0'})),
+  building: h(React.Fragment, null, h('rect',{x:4,y:3,width:16,height:18,rx:1}), h('line',{x1:8,y1:7,x2:8,y2:7.01}), h('line',{x1:12,y1:7,x2:12,y2:7.01}), h('line',{x1:16,y1:7,x2:16,y2:7.01}), h('line',{x1:8,y1:11,x2:8,y2:11.01}), h('line',{x1:12,y1:11,x2:12,y2:11.01}), h('line',{x1:16,y1:11,x2:16,y2:11.01}), h('line',{x1:8,y1:15,x2:16,y2:15})),
+  sparkles: h(React.Fragment, null, h('path',{d:'M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z'}), h('path',{d:'M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z'})),
+  camera: h(React.Fragment, null, h('path',{d:'M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z'}), h('circle',{cx:12,cy:13,r:3.2})),
+  sun: h(React.Fragment, null, h('circle',{cx:12,cy:12,r:4}), h('line',{x1:12,y1:2,x2:12,y2:4.2}), h('line',{x1:12,y1:19.8,x2:12,y2:22}), h('line',{x1:4.2,y1:4.2,x2:5.7,y2:5.7}), h('line',{x1:18.3,y1:18.3,x2:19.8,y2:19.8}), h('line',{x1:2,y1:12,x2:4.2,y2:12}), h('line',{x1:19.8,y1:12,x2:22,y2:12}), h('line',{x1:4.2,y1:19.8,x2:5.7,y2:18.3}), h('line',{x1:18.3,y1:5.7,x2:19.8,y2:4.2})),
+  moon: h('path',{d:'M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z'}),
+  alert: h(React.Fragment, null, h('path',{d:'M12 3 2 20h20L12 3z'}), h('line',{x1:12,y1:10,x2:12,y2:14}), h('line',{x1:12,y1:17,x2:12,y2:17.01})),
+  mapPin: h(React.Fragment, null, h('path',{d:'M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21z'}), h('circle',{cx:12,cy:9.5,r:2.4})),
+  menu: h(React.Fragment, null, h('line',{x1:4,y1:7,x2:20,y2:7}), h('line',{x1:4,y1:12,x2:20,y2:12}), h('line',{x1:4,y1:17,x2:20,y2:17})),
+  x: h(React.Fragment, null, h('line',{x1:6,y1:6,x2:18,y2:18}), h('line',{x1:18,y1:6,x2:6,y2:18})),
+  check: h('path',{d:'M5 13l4 4L19 7'}),
+  trash: h(React.Fragment, null, h('polyline',{points:'4 7 6 7 20 7'}), h('path',{d:'M10 11v6M14 11v6M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3'})),
+};
+const I = (name, size, cls) => h('span',{className:'nav-icon '+(cls||'')}, h(Icon,{path:icons[name], size:size||20}));
+
+/* ---------------- Helpers ---------------- */
+function daysUntil(dateStr){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(dateStr); target.setHours(0,0,0,0);
+  return Math.round((target-today)/86400000);
+}
+function fmtDate(dateStr){
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('ar-EG', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+function statusOf(dateStr){
+  const days = daysUntil(dateStr);
+  if(days <= 20) return { key:'soon', label:'قريب الانتهاء', badge:'badge-red', dot:'dot-red', days };
+  if(days <= 75) return { key:'upcoming', label:'يقترب من الانتهاء', badge:'badge-orange', dot:'dot-orange', days };
+  return { key:'safe', label:'سليم', badge:'badge-green', dot:'dot-green', days };
+}
+function addDays(n){ const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function uid(prefix){ return prefix + '-' + Math.random().toString(36).slice(2,7); }
+
+/* ---------------- Seed data ---------------- */
+const seedMedicines = [
+  { id: uid('MED'), name:'Paracetamol', quantity:'2 عبوة', expiry: addDays(18) },
+  { id: uid('MED'), name:'Amoxicillin', quantity:'1 عبوة', expiry: addDays(230) },
+  { id: uid('MED'), name:'Vitamin D3', quantity:'1 عبوة', expiry: addDays(50) },
+  { id: uid('MED'), name:'Ibuprofen', quantity:'3 شرائط', expiry: addDays(300) },
+];
+
+const seedRequests = [
+  { id:'REQ-001', medicine:'Medicine A', quantity:'3', expiry: addDays(22), location:'القاهرة', status:'قيد الانتظار' },
+  { id:'REQ-002', medicine:'Medicine B', quantity:'2', expiry: addDays(52), location:'الجيزة', status:'تم الاستلام' },
+];
+
+const collectionPoints = [
+  { name:'صيدلية النور', dist:'2.4 كم', note:'تستقبل الأدوية الزائدة' },
+  { name:'صيدلية الشفاء', dist:'4.1 كم', note:'تستقبل الأدوية منتهية الصلاحية' },
+  { name:'مركز التجميع المركزي', dist:'6.2 كم', note:'نقطة تجميع معتمدة' },
+];
+
+const aiFeatures = [
+  { icon:'camera', title:'التعرف على الدواء', desc:'يتعرف على بيانات الدواء من الصورة تلقائيًا.' },
+  { icon:'clock', title:'رصد تاريخ الصلاحية', desc:'يقرأ تاريخ انتهاء الصلاحية من العبوة.' },
+  { icon:'alert', title:'التحقق من البيانات', desc:'يكتشف البيانات الناقصة ويطلب مراجعتها.' },
+  { icon:'sparkles', title:'توقّع الفائض', desc:'يساعد الجهات المشاركة على فهم أنواع وكميات الأدوية المسجلة.' },
+];
+
+/* ---------------- Small building blocks ---------------- */
+function SafetyBanner(){
+  return h('div', { className:'flex items-start gap-3 px-4 py-3 rounded-xl mb-5', style:{ background:'var(--warning-soft)', border:'1px solid var(--warning)' } },
+    h('span',{ style:{color:'var(--warning)', flex:'none', marginTop:'2px'} }, h(Icon,{path:icons.alert, size:18})),
+    h('p',{ className:'text-sm leading-6', style:{ color:'var(--text)' } },
+      h('span',{ className:'font-bold' }, 'تنبيه هام: '),
+      'هذا التطبيق لا يقدّم تشخيصًا طبيًا أو نصائح علاجية، ولا يوصي باستخدام أو مشاركة الأدوية. يتم التعامل مع الأدوية الزائدة أو منتهية الصلاحية عبر جهات مختصة وفق القواعد المحلية.'
+    )
+  );
+}
+
+function StatCard({ label, value, tone, icon }){
+  const toneMap = {
+    primary: { bg:'var(--primary-soft)', fg:'var(--primary-strong)' },
+    accent: { bg:'var(--accent-soft)', fg:'var(--accent)' },
+    warning: { bg:'var(--warning-soft)', fg:'var(--warning)' },
+    success: { bg:'var(--success-soft)', fg:'var(--success)' },
+  }[tone || 'primary'];
+  return h('div', { className:'card p-5 flex items-center justify-between rise-in' },
+    h('div', null,
+      h('p', { className:'text-sm mb-2', style:{ color:'var(--text-muted)' } }, label),
+      h('p', { className:'text-3xl font-bold' }, value)
+    ),
+    h('div', { className:'rounded-xl p-3', style:{ background: toneMap.bg, color: toneMap.fg } }, h(Icon,{path:icons[icon], size:22}))
+  );
+}
+
+function SectionTitle({ title, subtitle, action }){
+  return h('div', { className:'flex items-start justify-between mb-4 gap-3 flex-wrap' },
+    h('div', null,
+      h('h2', { className:'text-lg font-bold' }, title),
+      subtitle && h('p', { className:'text-sm mt-1', style:{ color:'var(--text-muted)' } }, subtitle)
+    ),
+    action || null
+  );
+}
+
+function EmptyHint({ text }){
+  return h('div', { className:'text-center py-10 text-sm', style:{ color:'var(--text-muted)' } }, text);
+}
+
+/* ---------------- Bar chart (custom, no deps) ---------------- */
+function BarChart({ data }){
+  const max = Math.max(...data.map(d=>d.value)) || 1;
+  return h('div', { className:'flex items-end gap-5 h-48 px-2' },
+    data.map((d,i) => h('div', { key:i, className:'flex-1 flex flex-col items-center gap-2 h-full justify-end' },
+      h('span', { className:'text-sm font-bold' }, d.value),
+      h('div', { className:'w-full rounded-t-lg', style:{ height:(d.value/max*100)+'%', minHeight:'6px', background: d.color, transition:'height .5s ease' } }),
+      h('span', { className:'text-xs text-center', style:{ color:'var(--text-muted)' } }, d.label)
+    ))
+  );
+}
+
+/* ---------------- Pages: USER ---------------- */
+function DashboardPage({ medicines, goto, openSurplus }){
+  const soon = medicines.filter(m => statusOf(m.expiry).key==='soon').length;
+  return h('div', null,
+    h(SafetyBanner),
+    h(SectionTitle, { title:'نظرة عامة', subtitle:'ملخص سريع عن حالة أدويتك المسجّلة.' }),
+    h('div', { className:'grid gap-4', style:{ gridTemplateColumns:'repeat(auto-fit, minmax(200px,1fr))' } },
+      h(StatCard, { label:'إجمالي الأدوية المسجلة', value:24, tone:'primary', icon:'pill' }),
+      h(StatCard, { label:'تحتاج متابعة', value:5, tone:'warning', icon:'alert' }),
+      h(StatCard, { label:'قريبة من انتهاء الصلاحية', value:3, tone:'warning', icon:'clock' }),
+      h(StatCard, { label:'تم توجيهها لجهة مختصة', value:8, tone:'success', icon:'hand' })
+    ),
+    h('div', { className:'card p-6 mt-6 flex flex-col md:flex-row items-center justify-between gap-5', style:{ background:'linear-gradient(135deg, var(--primary-soft), var(--surface))' } },
+      h('div', null,
+        h('h3', { className:'text-base font-bold mb-1' }, 'عندك دواء زائد عن حاجتك؟'),
+        h('p', { className:'text-sm', style:{ color:'var(--text-muted)' } }, 'وجّهه لأقرب جهة مرخصة بدل ما يتحول لهدر.')
+      ),
+      h('button', { className:'btn btn-primary', onClick: openSurplus }, I('hand',18), 'لدي دواء زائد')
+    ),
+    h('div', { className:'mt-6' },
+      h(SectionTitle, { title:'مساعدة الذكاء الاصطناعي', subtitle:'كل النتائج حاليًا Mock — لا يوجد ذكاء اصطناعي حقيقي بعد.' }),
+      h('div', { className:'grid gap-4', style:{ gridTemplateColumns:'repeat(auto-fit, minmax(220px,1fr))' } },
+        aiFeatures.map((f,i) => h('div', { key:i, className:'card p-5' },
+          h('div', { className:'rounded-xl p-2.5 inline-flex mb-3', style:{ background:'var(--accent-soft)', color:'var(--accent)' } }, h(Icon,{path:icons[f.icon], size:20})),
+          h('h4', { className:'font-bold text-sm mb-1' }, f.title),
+          h('p', { className:'text-xs leading-5', style:{ color:'var(--text-muted)' } }, f.desc)
+        ))
+      )
+    )
+  );
+}
+
+function MedicinesPage({ medicines, removeMedicine }){
+  return h('div', null,
+    h(SectionTitle, { title:'أدويتي', subtitle: medicines.length + ' دواء مسجّل حاليًا.' }),
+    h('div', { className:'card overflow-x-auto scrollbar-thin' },
+      medicines.length === 0 ? h(EmptyHint,{text:'لا توجد أدوية مسجّلة بعد. ابدأ بإضافة دواء من صفحة "إضافة دواء".'}) :
+      h('table', null,
+        h('thead', null, h('tr', null,
+          h('th', null, 'اسم الدواء'), h('th', null,'الكمية'), h('th', null,'تاريخ الانتهاء'), h('th', null,'الحالة'), h('th', null,'الإجراء')
+        )),
+        h('tbody', null, medicines.map(m => {
+          const s = statusOf(m.expiry);
+          return h('tr', { key:m.id, className:'rise-in' },
+            h('td', { className:'font-semibold' }, m.name),
+            h('td', null, m.quantity),
+            h('td', { className:'mono' }, fmtDate(m.expiry)),
+            h('td', null, h('span', { className:'badge '+s.badge }, h('span',{className:'dot '+s.dot}), s.label)),
+            h('td', null, h('button', { className:'btn btn-outline', style:{padding:'.4rem .7rem'}, onClick:()=>removeMedicine(m.id) }, I('trash',15), 'إزالة'))
+          );
+        }))
+      )
+    )
+  );
+}
+
+function AddMedicinePage({ onSave, notify }){
+  const [photo, setPhoto] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanned, setScanned] = useState(null);
+  const [form, setForm] = useState(null);
+
+  function simulateScan(){
+    setScanning(true);
+    setTimeout(() => {
+      const mock = { name:'Paracetamol', expiry: addDays(18), quantity:'2 عبوة' };
+      setScanned(mock);
+      setForm(mock);
+      setScanning(false);
+    }, 900);
+  }
+  function save(){
+    if(!form || !form.name) return;
+    onSave({ id: uid('MED'), name: form.name, quantity: form.quantity, expiry: form.expiry });
+    notify({ tone:'green', title:'تمت الإضافة', msg: 'تم حفظ ' + form.name + ' في قائمة أدويتك.' });
+    setPhoto(false); setScanned(null); setForm(null);
+  }
+
+  return h('div', null,
+    h(SectionTitle, { title:'إضافة دواء', subtitle:'ارفع صورة العبوة، ثم استخدم المحاكاة للتعرف التلقائي على البيانات (تجريبي).' }),
+    h('div', { className:'card p-6 max-w-xl' },
+      !photo ? h('button', {
+          className:'w-full flex flex-col items-center justify-center gap-3 rounded-xl py-12 border-2 border-dashed transition',
+          style:{ borderColor:'var(--border)', color:'var(--text-muted)' },
+          onClick: ()=>setPhoto(true)
+        },
+        I('camera', 30),
+        h('span', { className:'text-sm font-semibold' }, 'رفع / التقاط صورة'),
+        h('span', { className:'text-xs' }, '(صورة تجريبية — لا يتم تحليلها فعليًا)')
+      ) : h('div', null,
+        h('div', { className:'flex items-center gap-4 mb-5' },
+          h('div', { className:'w-20 h-20 rounded-xl flex items-center justify-center', style:{ background:'var(--surface-alt)', color:'var(--text-muted)' } }, I('pill', 30)),
+          h('div', { className:'flex-1' },
+            h('p', { className:'text-sm font-semibold' }, 'تم اختيار صورة العبوة'),
+            h('p', { className:'text-xs', style:{ color:'var(--text-muted)' } }, 'جاهزة لتشغيل محاكاة التعرف الذكي.')
+          ),
+          h('button', { className:'btn btn-outline', style:{padding:'.4rem .7rem'}, onClick:()=>{ setPhoto(false); setScanned(null); setForm(null); } }, I('x',15))
+        ),
+        !scanned && h('button', { className:'btn btn-soft w-full', onClick: simulateScan, disabled: scanning },
+          scanning ? h('span',{className:'pulse'},'جارِ المحاكاة...') : h(React.Fragment, null, I('sparkles',18), 'Simulate AI Scan')
+        ),
+        scanned && form && h('div', { className:'mt-2 rise-in' },
+          h('div', { className:'flex items-center gap-2 px-3 py-2 rounded-lg mb-4 text-xs font-semibold', style:{ background:'var(--warning-soft)', color:'var(--warning)' } },
+            I('alert', 15), 'يرجى التأكد من البيانات قبل الحفظ.'
+          ),
+          h('div', { className:'grid gap-3' },
+            h('div', null, h('label',{className:'field-label'},'اسم الدواء'), h('input',{ type:'text', value:form.name, onChange:e=>setForm({...form,name:e.target.value}) })),
+            h('div', { className:'grid grid-cols-2 gap-3' },
+              h('div', null, h('label',{className:'field-label'},'تاريخ الانتهاء'), h('input',{ type:'date', value:form.expiry, onChange:e=>setForm({...form,expiry:e.target.value}) })),
+              h('div', null, h('label',{className:'field-label'},'الكمية'), h('input',{ type:'text', value:form.quantity, onChange:e=>setForm({...form,quantity:e.target.value}) }))
+            )
+          ),
+          h('button', { className:'btn btn-primary w-full mt-4', onClick: save }, I('check',18), 'حفظ الدواء')
+        )
+      )
+    )
+  );
+}
+
+function ExpiryPage({ medicines }){
+  const groups = { soon:[], upcoming:[], safe:[] };
+  medicines.forEach(m => groups[statusOf(m.expiry).key].push(m));
+  const sections = [
+    { key:'soon', title:'قريبة من الانتهاء', badge:'badge-red', dot:'dot-red' },
+    { key:'upcoming', title:'يقترب من الانتهاء', badge:'badge-orange', dot:'dot-orange' },
+    { key:'safe', title:'آمنة', badge:'badge-green', dot:'dot-green' },
+  ];
+  return h('div', null,
+    h(SectionTitle, { title:'مراقبة انتهاء الصلاحية', subtitle:'الأدوية مرتبة حسب قربها من تاريخ الانتهاء.' }),
+    h('div', { className:'grid gap-4', style:{ gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))' } },
+      sections.map(sec => h('div', { key:sec.key, className:'card p-5' },
+        h('div', { className:'flex items-center gap-2 mb-4' }, h('span',{className:'dot '+sec.dot}), h('h3',{className:'font-bold text-sm'}, sec.title), h('span',{className:'text-xs mono', style:{color:'var(--text-muted)'}}, '('+groups[sec.key].length+')')),
+        groups[sec.key].length===0 ? h('p',{className:'text-xs', style:{color:'var(--text-muted)'}}, 'لا توجد أدوية في هذا القسم.') :
+        h('div', { className:'flex flex-col gap-3' }, groups[sec.key].map(m => h('div', { key:m.id, className:'surface-alt rounded-lg p-3' },
+          h('p', { className:'text-sm font-semibold' }, m.name),
+          h('p', { className:'text-xs mt-0.5', style:{ color:'var(--text-muted)' } }, 'ينتهي خلال ' + statusOf(m.expiry).days + ' يومًا')
+        )))
+      ))
+    )
+  );
+}
+
+function SurplusPage({ onSubmitRequest, notify, embedded, onClose }){
+  const [step, setStep] = useState('form');
+  const [form, setForm] = useState({ name:'', quantity:'', expiry: addDays(30), condition:'سليم' });
+  const [chosenPoint, setChosenPoint] = useState(null);
+
+  function submitForm(e){
+    e && e.preventDefault();
+    if(!form.name) return;
+    setStep('points');
+  }
+  function confirmPoint(point){
+    setChosenPoint(point);
+    onSubmitRequest({ medicine: form.name, quantity: form.quantity || '1', expiry: form.expiry, location: point.name });
+    notify({ tone:'green', title:'Collection Update', msg:'تم تسجيل طلب تسليم الدواء بنجاح.' });
+    setStep('done');
+  }
+  function reset(){ setStep('form'); setForm({ name:'', quantity:'', expiry: addDays(30), condition:'سليم' }); setChosenPoint(null); }
+
+  return h('div', null,
+    h(SectionTitle, {
+      title:'لدي دواء زائد',
+      subtitle:'سجّل بيانات الدواء الزائد ليتم توجيهك إلى أقرب جهة مرخصة.',
+      action: onClose ? h('button',{className:'btn btn-outline', onClick:onClose}, I('x',16),'إغلاق') : null
+    }),
+    step==='form' && h('form', { className:'card p-6 max-w-xl grid gap-4', onSubmit: submitForm },
+      h('div', null, h('label',{className:'field-label'},'اسم الدواء'), h('input',{ type:'text', required:true, value:form.name, onChange:e=>setForm({...form,name:e.target.value}), placeholder:'مثال: Paracetamol' })),
+      h('div', { className:'grid grid-cols-2 gap-3' },
+        h('div', null, h('label',{className:'field-label'},'الكمية'), h('input',{ type:'text', value:form.quantity, onChange:e=>setForm({...form,quantity:e.target.value}), placeholder:'مثال: عبوة واحدة' })),
+        h('div', null, h('label',{className:'field-label'},'تاريخ الانتهاء'), h('input',{ type:'date', value:form.expiry, onChange:e=>setForm({...form,expiry:e.target.value}) }))
+      ),
+      h('div', null, h('label',{className:'field-label'},'الحالة'),
+        h('select', { value:form.condition, onChange:e=>setForm({...form,condition:e.target.value}) },
+          h('option', null, 'سليم'), h('option', null, 'شبه مستعمل'), h('option', null, 'منتهي الصلاحية')
+        )
+      ),
+      h('button', { type:'button', className:'w-full flex items-center justify-center gap-2 rounded-xl py-4 border-2 border-dashed text-sm font-semibold', style:{ borderColor:'var(--border)', color:'var(--text-muted)' } }, I('camera',18), 'إرفاق صور (اختياري)'),
+      h('button', { className:'btn btn-primary w-full', type:'submit' }, 'بحث عن نقطة استلام آمنة')
+    ),
+    step==='points' && h('div', null,
+      h('div', { className:'card p-4 mb-5' }, h(MapPlaceholder)),
+      h('h3', { className:'font-bold text-sm mb-3' }, 'Find a Safe Collection Point'),
+      h('div', { className:'grid gap-3', style:{ gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))' } },
+        collectionPoints.map((p,i) => h('div', { key:i, className:'card p-4 flex flex-col gap-3' },
+          h('div', { className:'flex items-center gap-2' }, h('span',{style:{color:'var(--accent)'}}, I('building',20)), h('span', { className:'font-bold text-sm' }, p.name)),
+          h('p', { className:'text-xs', style:{ color:'var(--text-muted)' } }, p.dist + ' · ' + p.note),
+          h('button', { className:'btn btn-soft', onClick:()=>confirmPoint(p) }, 'تسجيل طلب تسليم هنا')
+        ))
+      )
+    ),
+    step==='done' && h('div', { className:'card p-8 max-w-lg text-center rise-in' },
+      h('div', { className:'w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4', style:{ background:'var(--success-soft)', color:'var(--success)' } }, I('check',26)),
+      h('h3', { className:'font-bold mb-2' }, 'تم تسجيل الطلب بنجاح'),
+      h('p', { className:'text-sm mb-6', style:{ color:'var(--text-muted)' } }, 'سيتم التنسيق مع «' + (chosenPoint && chosenPoint.name) + '» لاستلام الدواء وفق القواعد المحلية.'),
+      h('button', { className:'btn btn-outline', onClick: reset }, 'تسجيل طلب آخر')
+    )
+  );
+}
+
+function MapPlaceholder(){
+  const pins = [ {x:'22%',y:'35%'}, {x:'55%',y:'60%'}, {x:'75%',y:'28%'} ];
+  return h('div', { className:'relative rounded-xl overflow-hidden', style:{ height:'180px', background:'repeating-linear-gradient(45deg, var(--surface-alt), var(--surface-alt) 10px, var(--surface) 10px, var(--surface) 20px)' } },
+    h('p',{ className:'absolute top-2 right-3 text-[11px] font-semibold', style:{color:'var(--text-muted)'} }, 'خريطة تجريبية (بدون خدمة خرائط حقيقية)'),
+    pins.map((p,i)=> h('span', { key:i, className:'absolute', style:{ right:p.x, top:p.y, color:'var(--danger)' } }, h(Icon,{path:icons.mapPin, size:26})))
+  );
+}
+
+function NotificationsPage({ items }){
+  const toneMap = { red:{dot:'dot-red',badge:'badge-red'}, orange:{dot:'dot-orange',badge:'badge-orange'}, green:{dot:'dot-green',badge:'badge-green'} };
+  return h('div', null,
+    h(SectionTitle, { title:'الإشعارات', subtitle:'كل التنبيهات المتعلقة بأدويتك وطلباتك.' }),
+    h('div', { className:'flex flex-col gap-3' },
+      items.length===0 ? h(EmptyHint,{text:'لا توجد إشعارات حاليًا.'}) :
+      items.map(n => h('div', { key:n.id, className:'card p-4 flex items-start gap-3 rise-in' },
+        h('span', { className:'dot '+toneMap[n.tone].dot, style:{ marginTop:'6px' } }),
+        h('div', { className:'flex-1' },
+          h('p', { className:'text-sm font-semibold' }, n.title),
+          h('p', { className:'text-xs mt-0.5', style:{ color:'var(--text-muted)' } }, n.msg)
+        )
+      ))
+    )
+  );
+}
+
+/* ---------------- Pages: ORGANIZATION ---------------- */
+function OrgOverviewPage({ requests }){
+  const pending = requests.filter(r=>r.status==='قيد الانتظار').length;
+  const collected = requests.filter(r=>r.status==='تم الاستلام').length;
+  return h('div', null,
+    h(SectionTitle, { title:'نظرة عامة على التجميع', subtitle:'ملخص أداء جهتكم في استقبال الأدوية الزائدة.' }),
+    h('div', { className:'grid gap-4', style:{ gridTemplateColumns:'repeat(auto-fit, minmax(200px,1fr))' } },
+      h(StatCard, { label:'إجمالي الأدوية المسجلة', value:48, tone:'primary', icon:'pill' }),
+      h(StatCard, { label:'طلبات قيد الانتظار', value:pending, tone:'warning', icon:'clock' }),
+      h(StatCard, { label:'تم استلامها', value:collected+30, tone:'success', icon:'check' }),
+      h(StatCard, { label:'قريبة من الانتهاء', value:9, tone:'accent', icon:'alert' })
+    ),
+    h('div', { className:'card p-6 mt-6' },
+      h(SectionTitle, { title:'الطلب حسب فئة الدواء', subtitle:'لمساعدة الجهات على فهم أنواع وكميات الأدوية المسجّلة — دون أي توصية باستخدامها.' }),
+      h(BarChart, { data:[
+        { label:'مسكّنات', value:32, color:'var(--primary)' },
+        { label:'مضادات حيوية', value:18, color:'var(--accent)' },
+        { label:'أدوية مزمنة', value:14, color:'var(--warning)' },
+        { label:'أخرى', value:9, color:'var(--text-muted)' },
+      ]})
+    )
+  );
+}
+
+function OrgRequestsPage({ requests, updateStatus }){
+  return h('div', null,
+    h(SectionTitle, { title:'طلبات الاستلام', subtitle: requests.length + ' طلب مسجّل.' }),
+    h('div', { className:'card overflow-x-auto scrollbar-thin' },
+      h('table', null,
+        h('thead', null, h('tr', null,
+          h('th', null,'رقم الطلب'), h('th', null,'الدواء'), h('th', null,'الكمية'), h('th', null,'الانتهاء'), h('th', null,'الموقع'), h('th', null,'الحالة'), h('th', null,'')
+        )),
+        h('tbody', null, requests.map(r => h('tr', { key:r.id, className:'rise-in' },
+          h('td', { className:'mono font-semibold' }, r.id),
+          h('td', null, r.medicine),
+          h('td', null, r.quantity),
+          h('td', { className:'mono' }, fmtDate(r.expiry)),
+          h('td', null, r.location),
+          h('td', null, h('span', { className:'badge ' + (r.status==='تم الاستلام' ? 'badge-green' : 'badge-orange') },
+            h('span',{className:'dot '+(r.status==='تم الاستلام'?'dot-green':'dot-orange')}), r.status)),
+          h('td', null, r.status!=='تم الاستلام' && h('button', { className:'btn btn-outline', style:{padding:'.35rem .65rem', fontSize:'.78rem'}, onClick:()=>updateStatus(r.id) }, 'تعليم كمُستلم'))
+        )))
+      )
+    )
+  );
+}
+
+/* ---------------- Shell ---------------- */
+const userNav = [
+  { id:'dashboard', label:'الرئيسية', icon:'grid' },
+  { id:'medicines', label:'أدويتي', icon:'pill' },
+  { id:'add', label:'إضافة دواء', icon:'plus' },
+  { id:'expiry', label:'انتهاء الصلاحية', icon:'clock' },
+  { id:'surplus', label:'لدي دواء زائد', icon:'hand' },
+  { id:'notifications', label:'الإشعارات', icon:'bell' },
+];
+const orgNav = [
+  { id:'org-overview', label:'نظرة عامة', icon:'grid' },
+  { id:'org-requests', label:'طلبات الاستلام', icon:'building' },
+];
+
+function Sidebar({ role, page, setPage, mobileOpen, closeMobile }){
+  const items = role==='user' ? userNav : orgNav;
+  return h(React.Fragment, null,
+    mobileOpen && h('div', { className:'fixed inset-0 z-30 md:hidden', style:{ background:'rgba(0,0,0,.4)' }, onClick: closeMobile }),
+    h('aside', {
+      className:'fixed top-0 right-0 h-full w-64 p-5 flex flex-col gap-1 z-40 transition-transform md:translate-x-0 ' + (mobileOpen ? 'translate-x-0' : 'translate-x-full'),
+      style:{ background:'var(--surface)', borderInlineEnd:'1px solid var(--border)' },
+    },
+      h('div', { className:'flex items-center gap-2 mb-6 px-1' },
+        h('span', { className:'text-2xl' }, '💊'),
+        h('div', null,
+          h('p', { className:'font-bold text-sm leading-4' }, 'دوائي مش هدر'),
+          h('p', { className:'text-[11px]', style:{ color:'var(--text-muted)' } }, 'Smart Medicine Waste Reduction')
+        ),
+        h('button', { className:'md:hidden ms-auto', style:{color:'var(--text-muted)'}, onClick: closeMobile }, I('x',20))
+      ),
+      items.map(it => h('div', {
+        key:it.id, className:'nav-item ' + (page===it.id ? 'active':''),
+        onClick: ()=>{ setPage(it.id); closeMobile(); }
+      }, I(it.icon,18), it.label)),
+      h('div', { className:'mt-auto pt-4 text-center text-[11px]', style:{ color:'var(--text-muted)', borderTop:'1px solid var(--border)' } },
+        h('p', { className:'pt-4' }, 'صُمم بواسطة'),
+        h('p', { className:'font-bold', style:{ color:'var(--text)' } }, 'Menna Ezzat')
+      )
+    )
+  );
+}
+
+function TopBar({ role, setRole, theme, setTheme, onMenu, title }){
+  return h('div', { className:'sticky top-0 z-20 flex items-center justify-between gap-3 px-4 md:px-8 py-4 border-b', style:{ background:'var(--bg)', borderColor:'var(--border)' } },
+    h('div', { className:'flex items-center gap-3' },
+      h('button', { className:'md:hidden', style:{color:'var(--text-muted)'}, onClick:onMenu }, I('menu',22)),
+      h('h1', { className:'font-bold text-base md:text-lg' }, title)
+    ),
+    h('div', { className:'flex items-center gap-3' },
+      h('div', { className:'flex items-center gap-2 surface-alt rounded-full p-1 text-xs font-semibold' },
+        h('button', { className:'px-3 py-1.5 rounded-full transition', style: role==='user' ? {background:'var(--primary)', color:'#fff'} : {color:'var(--text-muted)'}, onClick:()=>setRole('user') }, 'مستخدم'),
+        h('button', { className:'px-3 py-1.5 rounded-full transition', style: role==='org' ? {background:'var(--primary)', color:'#fff'} : {color:'var(--text-muted)'}, onClick:()=>setRole('org') }, 'جهة مشاركة')
+      ),
+      h('button', { className:'w-9 h-9 rounded-full flex items-center justify-center', style:{ background:'var(--surface-alt)', color:'var(--text-muted)' }, onClick:()=>setTheme(theme==='light'?'dark':'light') },
+        I(theme==='light' ? 'moon' : 'sun', 17)
+      )
+    )
+  );
+}
+
+const titles = {
+  dashboard:'الرئيسية', medicines:'أدويتي', add:'إضافة دواء', expiry:'انتهاء الصلاحية',
+  surplus:'لدي دواء زائد', notifications:'الإشعارات', 'org-overview':'لوحة الجهة المشاركة', 'org-requests':'طلبات الاستلام'
+};
+
+function App(){
+  const [theme, setTheme] = useState('light');
+  const [role, setRole] = useState('user');
+  const [page, setPage] = useState('dashboard');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [medicines, setMedicines] = useState(seedMedicines);
+  const [requests, setRequests] = useState(seedRequests);
+  const [notifications, setNotifications] = useState([
+    { id: uid('N'), tone:'orange', title:'بيانات ناقصة', msg:'يرجى مراجعة تاريخ انتهاء Vitamin D3.' },
+  ]);
+  const seededExpiryNotif = useRef(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    if(seededExpiryNotif.current) return;
+    const soonMed = medicines.find(m => statusOf(m.expiry).key==='soon');
+    if(soonMed){
+      seededExpiryNotif.current = true;
+      setNotifications(prev => [{ id: uid('N'), tone:'red', title:'دواء قريب من انتهاء الصلاحية', msg: soonMed.name + ' سينتهي خلال ' + statusOf(soonMed.expiry).days + ' يومًا.' }, ...prev]);
+    }
+  }, [medicines]);
+
+  function notify({ tone, title, msg }){
+    setNotifications(prev => [{ id: uid('N'), tone, title, msg }, ...prev]);
+  }
+  function addMedicine(m){
+    setMedicines(prev => [m, ...prev]);
+    setPage('medicines');
+  }
+  function removeMedicine(id){ setMedicines(prev => prev.filter(m=>m.id!==id)); }
+  function submitRequest({ medicine, quantity, expiry, location }){
+    const idNum = requests.length + 1;
+    setRequests(prev => [...prev, { id:'REQ-'+String(idNum).padStart(3,'0'), medicine, quantity, expiry, location, status:'قيد الانتظار' }]);
+  }
+  function updateStatus(id){
+    setRequests(prev => prev.map(r => r.id===id ? {...r, status:'تم الاستلام'} : r));
+  }
+
+  let content;
+  if(role==='user'){
+    if(page==='dashboard') content = h(DashboardPage, { medicines, goto:setPage, openSurplus:()=>setPage('surplus') });
+    else if(page==='medicines') content = h(MedicinesPage, { medicines, removeMedicine });
+    else if(page==='add') content = h(AddMedicinePage, { onSave:addMedicine, notify });
+    else if(page==='expiry') content = h(ExpiryPage, { medicines });
+    else if(page==='surplus') content = h(SurplusPage, { onSubmitRequest:submitRequest, notify });
+    else if(page==='notifications') content = h(NotificationsPage, { items:notifications });
+  } else {
+    if(page!=='org-overview' && page!=='org-requests') { content = h(OrgOverviewPage, { requests }); }
+    else if(page==='org-overview') content = h(OrgOverviewPage, { requests });
+    else content = h(OrgRequestsPage, { requests, updateStatus });
+  }
+
+  const effectivePage = role==='user' ? page : (page.startsWith('org') ? page : 'org-overview');
+
+  return h('div', null,
+    h(Sidebar, { role, page: effectivePage, setPage, mobileOpen, closeMobile:()=>setMobileOpen(false) }),
+    h('div', { className:'md:ms-64' },
+      h(TopBar, { role, setRole: (r)=>{ setRole(r); setPage(r==='user'?'dashboard':'org-overview'); }, theme, setTheme, onMenu:()=>setMobileOpen(true), title: titles[effectivePage] }),
+      h('main', { className:'p-4 md:p-8 max-w-6xl' }, content)
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>
